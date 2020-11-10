@@ -5,7 +5,6 @@
 namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -32,9 +31,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorTeamsActivityHandler"/> class.
         /// </summary>
-        /// <param name="teamsFileUpload">file upload service.</param>
-        /// <param name="userDataRepository">user data repository.</param>
-        /// <param name="localizer">Localiation service.</param>
+        /// <param name="teamsFileUpload">File upload service.</param>
+        /// <param name="userDataRepository">User data repository.</param>
+        /// <param name="localizer">Localization service.</param>
         public AuthorTeamsActivityHandler(
             TeamsFileUpload teamsFileUpload,
             UserDataRepository userDataRepository,

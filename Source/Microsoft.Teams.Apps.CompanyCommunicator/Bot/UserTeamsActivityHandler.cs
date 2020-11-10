@@ -11,8 +11,6 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
     using Microsoft.Bot.Builder.Teams;
     using Microsoft.Bot.Schema;
     using Microsoft.Bot.Schema.Teams;
-    using Microsoft.Extensions.Localization;
-    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources;
 
     /// <summary>
     /// Company Communicator User Bot.
@@ -23,23 +21,14 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
         private static readonly string TeamRenamedEventType = "teamRenamed";
 
         private readonly TeamsDataCapture teamsDataCapture;
-        private readonly TeamsFileUpload teamsFileUpload;
-        private readonly IStringLocalizer<Strings> localizer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserTeamsActivityHandler"/> class.
         /// </summary>
         /// <param name="teamsDataCapture">Teams data capture service.</param>
-        /// <param name="teamsFileUpload">change this.</param>
-        /// <param name="localizer">Localization service.</param>
-        public UserTeamsActivityHandler(
-            TeamsDataCapture teamsDataCapture,
-            TeamsFileUpload teamsFileUpload,
-            IStringLocalizer<Strings> localizer)
+        public UserTeamsActivityHandler(TeamsDataCapture teamsDataCapture)
         {
             this.teamsDataCapture = teamsDataCapture ?? throw new ArgumentNullException(nameof(teamsDataCapture));
-            this.teamsFileUpload = teamsFileUpload ?? throw new ArgumentNullException(nameof(teamsFileUpload));
-            this.localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
         }
 
         /// <summary>

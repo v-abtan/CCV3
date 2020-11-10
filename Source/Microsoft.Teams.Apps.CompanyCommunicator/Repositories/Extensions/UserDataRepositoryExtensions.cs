@@ -23,7 +23,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
             this IUserDataRepository userDataRepository,
             IConversationUpdateActivity activity)
         {
-            var userDataEntity = UserDataRepositoryExtensions.ParseUserData(activity);
+            var userDataEntity = UserDataRepositoryExtensions.ParseData(activity, UserDataTableNames.UserDataPartition);
             if (userDataEntity != null)
             {
                 await userDataRepository.InsertOrMergeAsync(userDataEntity);
@@ -40,7 +40,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
             this IUserDataRepository userDataRepository,
             IConversationUpdateActivity activity)
         {
-            var userDataEntity = UserDataRepositoryExtensions.ParseUserData(activity);
+            var userDataEntity = UserDataRepositoryExtensions.ParseData(activity, UserDataTableNames.UserDataPartition);
             if (userDataEntity != null)
             {
                 var found = await userDataRepository.GetAsync(UserDataTableNames.UserDataPartition, userDataEntity.AadId);
@@ -61,7 +61,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
             this UserDataRepository userDataRepository,
             IConversationUpdateActivity activity)
         {
-            var userDataEntity = UserDataRepositoryExtensions.ParseAuthorData(activity);
+            var userDataEntity = UserDataRepositoryExtensions.ParseData(activity, UserDataTableNames.AuthorDataPartition);
             if (userDataEntity != null)
             {
                 await userDataRepository.InsertOrMergeAsync(userDataEntity);
@@ -78,7 +78,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
             this UserDataRepository userDataRepository,
             IConversationUpdateActivity activity)
         {
-            var userDataEntity = UserDataRepositoryExtensions.ParseAuthorData(activity);
+            var userDataEntity = UserDataRepositoryExtensions.ParseData(activity, UserDataTableNames.AuthorDataPartition);
             if (userDataEntity != null)
             {
                 var found = await userDataRepository.GetAsync(UserDataTableNames.AuthorDataPartition, userDataEntity.AadId);
@@ -89,36 +89,14 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
             }
         }
 
-        private static UserDataEntity ParseUserData(IConversationUpdateActivity activity)
+        private static UserDataEntity ParseData(IConversationUpdateActivity activity, string partitionKey)
         {
             var rowKey = activity?.From?.AadObjectId;
             if (rowKey != null)
             {
                 var userDataEntity = new UserDataEntity
                 {
-                    PartitionKey = UserDataTableNames.UserDataPartition,
-                    RowKey = activity?.From?.AadObjectId,
-                    AadId = activity?.From?.AadObjectId,
-                    UserId = activity?.From?.Id,
-                    ConversationId = activity?.Conversation?.Id,
-                    ServiceUrl = activity?.ServiceUrl,
-                    TenantId = activity?.Conversation?.TenantId,
-                };
-
-                return userDataEntity;
-            }
-
-            return null;
-        }
-
-        private static UserDataEntity ParseAuthorData(IConversationUpdateActivity activity)
-        {
-            var rowKey = activity?.From?.AadObjectId;
-            if (rowKey != null)
-            {
-                var userDataEntity = new UserDataEntity
-                {
-                    PartitionKey = UserDataTableNames.AuthorDataPartition,
+                    PartitionKey = partitionKey,
                     RowKey = activity?.From?.AadObjectId,
                     AadId = activity?.From?.AadObjectId,
                     UserId = activity?.From?.Id,

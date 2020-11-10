@@ -46,7 +46,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.DraftNotificationPreview
             this.botAppId = botOptions.Value.UserAppId;
             if (string.IsNullOrEmpty(this.botAppId))
             {
-                throw new ApplicationException("MicrosoftAppId setting is missing in the configuration.");
+                throw new ApplicationException("UserAppId setting is missing in the configuration.");
             }
 
             this.adaptiveCardCreator = adaptiveCardCreator;
