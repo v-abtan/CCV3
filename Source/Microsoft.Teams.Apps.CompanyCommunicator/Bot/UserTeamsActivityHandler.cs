@@ -1,4 +1,4 @@
-// <copyright file="CompanyCommunicatorBot.cs" company="Microsoft">
+// <copyright file="UserTeamsActivityHandler.cs" company="Microsoft">
 // Copyright (c) Microsoft. All rights reserved.
 // </copyright>
 
@@ -15,10 +15,10 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources;
 
     /// <summary>
-    /// Company Communicator Bot.
-    /// Captures user data, team data, upload files.
+    /// Company Communicator User Bot.
+    /// Captures user data, team data.
     /// </summary>
-    public class CompanyCommunicatorBot : TeamsActivityHandler
+    public class UserTeamsActivityHandler : TeamsActivityHandler
     {
         private static readonly string TeamRenamedEventType = "teamRenamed";
 
@@ -27,12 +27,12 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
         private readonly IStringLocalizer<Strings> localizer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompanyCommunicatorBot"/> class.
+        /// Initializes a new instance of the <see cref="UserTeamsActivityHandler"/> class.
         /// </summary>
         /// <param name="teamsDataCapture">Teams data capture service.</param>
         /// <param name="teamsFileUpload">change this.</param>
         /// <param name="localizer">Localization service.</param>
-        public CompanyCommunicatorBot(
+        public UserTeamsActivityHandler(
             TeamsDataCapture teamsDataCapture,
             TeamsFileUpload teamsFileUpload,
             IStringLocalizer<Strings> localizer)
@@ -79,68 +79,6 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
             }
         }
 
-        /// <summary>
-        /// Invoke when a file upload accept consent activitiy is received from the channel.
-        /// </summary>
-        /// <param name="turnContext">The context object for this turn.</param>
-        /// <param name="fileConsentCardResponse">The accepted response object of File Card.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task reprsenting asynchronous operation.</returns>
-        protected override async Task OnTeamsFileConsentAcceptAsync(
-            ITurnContext<IInvokeActivity> turnContext,
-            FileConsentCardResponse fileConsentCardResponse,
-            CancellationToken cancellationToken)
-        {
-            var (fileName, notificationId) = this.teamsFileUpload.ExtractInformation(fileConsentCardResponse.Context);
-            try
-            {
-                await this.teamsFileUpload.UploadToOneDrive(
-                    fileName,
-                    fileConsentCardResponse.UploadInfo.UploadUrl,
-                    cancellationToken);
-
-                await this.teamsFileUpload.FileUploadCompletedAsync(
-                    turnContext,
-                    fileConsentCardResponse,
-                    fileName,
-                    notificationId,
-                    cancellationToken);
-            }
-            catch (Exception e)
-            {
-                await this.teamsFileUpload.FileUploadFailedAsync(
-                    turnContext,
-                    notificationId,
-                    e.ToString(),
-                    cancellationToken);
-            }
-        }
-
-        /// <summary>
-        /// Invoke when a file upload decline consent activitiy is received from the channel.
-        /// </summary>
-        /// <param name="turnContext">The context object for this turn.</param>
-        /// <param name="fileConsentCardResponse">The declined response object of File Card.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task reprsenting asynchronous operation.</returns>
-        protected override async Task OnTeamsFileConsentDeclineAsync(ITurnContext<IInvokeActivity> turnContext, FileConsentCardResponse fileConsentCardResponse, CancellationToken cancellationToken)
-        {
-            var (fileName, notificationId) = this.teamsFileUpload.ExtractInformation(
-                fileConsentCardResponse.Context);
-
-            await this.teamsFileUpload.CleanUp(
-                turnContext,
-                fileName,
-                notificationId,
-                cancellationToken);
-
-            var reply = MessageFactory.Text(this.localizer.GetString("PermissionDeclinedText"));
-            reply.TextFormat = "xml";
-            await turnContext.SendActivityAsync(reply, cancellationToken);
-        }
-
         private bool IsTeamInformationUpdated(IConversationUpdateActivity activity)
         {
             if (activity == null)
@@ -154,7 +92,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
                 return false;
             }
 
-            return CompanyCommunicatorBot.TeamRenamedEventType.Equals(channelData.EventType, StringComparison.OrdinalIgnoreCase);
+            return UserTeamsActivityHandler.TeamRenamedEventType.Equals(channelData.EventType, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

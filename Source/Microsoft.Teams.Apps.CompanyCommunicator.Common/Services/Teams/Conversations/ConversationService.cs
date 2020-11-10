@@ -25,7 +25,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.Teams
         private static readonly string MicrosoftTeamsChannelId = "msteams";
 
         private readonly BotFrameworkHttpAdapter botAdapter;
-        private readonly CommonMicrosoftAppCredentials appCredentials;
+        private readonly UserMicrosoftAppCredentials appCredentials;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConversationService"/> class.
@@ -34,7 +34,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.Teams
         /// <param name="appCredentials">The common Microsoft app credentials.</param>
         public ConversationService(
             BotFrameworkHttpAdapter botAdapter,
-            CommonMicrosoftAppCredentials appCredentials)
+            UserMicrosoftAppCredentials appCredentials)
         {
             this.botAdapter = botAdapter ?? throw new ArgumentNullException(nameof(botAdapter));
             this.appCredentials = appCredentials ?? throw new ArgumentNullException(nameof(appCredentials));

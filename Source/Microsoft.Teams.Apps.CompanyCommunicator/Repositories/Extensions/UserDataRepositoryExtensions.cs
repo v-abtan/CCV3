@@ -51,6 +51,44 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
             }
         }
 
+        /// <summary>
+        /// Add personal data in Table Storage.
+        /// </summary>
+        /// <param name="userDataRepository">The user data repository.</param>
+        /// <param name="activity">Bot conversation update activity instance.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        public static async Task SaveAuthorDataAsync(
+            this UserDataRepository userDataRepository,
+            IConversationUpdateActivity activity)
+        {
+            var userDataEntity = UserDataRepositoryExtensions.ParseAuthorData(activity);
+            if (userDataEntity != null)
+            {
+                await userDataRepository.InsertOrMergeAsync(userDataEntity);
+            }
+        }
+
+        /// <summary>
+        /// Remove personal data in table storage.
+        /// </summary>
+        /// <param name="userDataRepository">The user data repository.</param>
+        /// <param name="activity">Bot conversation update activity instance.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        public static async Task RemoveAuthorDataAsync(
+            this UserDataRepository userDataRepository,
+            IConversationUpdateActivity activity)
+        {
+            var userDataEntity = UserDataRepositoryExtensions.ParseAuthorData(activity);
+            if (userDataEntity != null)
+            {
+                var found = await userDataRepository.GetAsync(UserDataTableNames.AuthorDataPartition, userDataEntity.AadId);
+                if (found != null)
+                {
+                    await userDataRepository.DeleteAsync(found);
+                }
+            }
+        }
+
         private static UserDataEntity ParseUserData(IConversationUpdateActivity activity)
         {
             var rowKey = activity?.From?.AadObjectId;
@@ -59,6 +97,28 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions
                 var userDataEntity = new UserDataEntity
                 {
                     PartitionKey = UserDataTableNames.UserDataPartition,
+                    RowKey = activity?.From?.AadObjectId,
+                    AadId = activity?.From?.AadObjectId,
+                    UserId = activity?.From?.Id,
+                    ConversationId = activity?.Conversation?.Id,
+                    ServiceUrl = activity?.ServiceUrl,
+                    TenantId = activity?.Conversation?.TenantId,
+                };
+
+                return userDataEntity;
+            }
+
+            return null;
+        }
+
+        private static UserDataEntity ParseAuthorData(IConversationUpdateActivity activity)
+        {
+            var rowKey = activity?.From?.AadObjectId;
+            if (rowKey != null)
+            {
+                var userDataEntity = new UserDataEntity
+                {
+                    PartitionKey = UserDataTableNames.AuthorDataPartition,
                     RowKey = activity?.From?.AadObjectId,
                     AadId = activity?.From?.AadObjectId,
                     UserId = activity?.From?.Id,

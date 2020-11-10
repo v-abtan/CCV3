@@ -78,8 +78,10 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
             services.AddOptions<BotOptions>()
                 .Configure<IConfiguration>((botOptions, configuration) =>
                 {
-                    botOptions.MicrosoftAppId = configuration.GetValue<string>("MicrosoftAppId");
-                    botOptions.MicrosoftAppPassword = configuration.GetValue<string>("MicrosoftAppPassword");
+                    botOptions.UserAppId = configuration.GetValue<string>("UserAppId");
+                    botOptions.UserAppPassword = configuration.GetValue<string>("UserAppPassword");
+                    botOptions.AuthorAppId = configuration.GetValue<string>("AuthorAppId");
+                    botOptions.AuthorAppPassword = configuration.GetValue<string>("AuthorAppPassword");
                 });
             services.AddOptions<BotFilterMiddlewareOptions>()
                 .Configure<IConfiguration>((botFilterMiddlewareOptions, configuration) =>
@@ -154,7 +156,8 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
             services.AddSingleton<CompanyCommunicatorBotAdapter>();
             services.AddTransient<TeamsDataCapture>();
             services.AddTransient<TeamsFileUpload>();
-            services.AddTransient<IBot, CompanyCommunicatorBot>();
+            services.AddTransient<UserTeamsActivityHandler>();
+            services.AddTransient<AuthorTeamsActivityHandler>();
 
             // Add repositories.
             services.AddSingleton<ITeamDataRepository, TeamDataRepository>();

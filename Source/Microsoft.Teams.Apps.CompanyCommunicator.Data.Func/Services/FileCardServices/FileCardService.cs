@@ -24,7 +24,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.FileCardSe
     public class FileCardService : IFileCardService
     {
         private readonly IUserDataRepository userDataRepository;
-        private readonly string microsoftAppId;
+        private readonly string authorAppId;
         private readonly BotFrameworkHttpAdapter botAdapter;
         private readonly IStringLocalizer<Strings> localizer;
 
@@ -42,7 +42,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.FileCardSe
             IStringLocalizer<Strings> localizer)
         {
             this.botAdapter = botAdapter;
-            this.microsoftAppId = botOptions.Value.MicrosoftAppId;
+            this.authorAppId = botOptions.Value.AuthorAppId;
             this.userDataRepository = userDataRepository;
             this.localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
         }
@@ -72,7 +72,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.FileCardSe
 
             int maxNumberOfAttempts = 10;
             await this.botAdapter.ContinueConversationAsync(
-               botAppId: this.microsoftAppId,
+               botAppId: this.authorAppId,
                reference: conversationReference,
                callback: async (turnContext, cancellationToken) =>
                {
