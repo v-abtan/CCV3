@@ -151,13 +151,13 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
             services.AddHttpClient();
 
             // Add bot services.
-            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-            services.AddTransient<CompanyCommunicatorBotFilterMiddleware>();
-            services.AddSingleton<CompanyCommunicatorBotAdapter>();
             services.AddTransient<TeamsDataCapture>();
             services.AddTransient<TeamsFileUpload>();
             services.AddTransient<UserTeamsActivityHandler>();
             services.AddTransient<AuthorTeamsActivityHandler>();
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+            services.AddTransient<CompanyCommunicatorBotFilterMiddleware>();
+            services.AddSingleton<CompanyCommunicatorBotAdapter>();
 
             // Add repositories.
             services.AddSingleton<ITeamDataRepository, TeamDataRepository>();

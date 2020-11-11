@@ -25,7 +25,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
     {
         private const string PersonalType = "personal";
         private readonly TeamsFileUpload teamsFileUpload;
-        private readonly UserDataRepository userDataRepository;
+        private readonly IUserDataRepository userDataRepository;
         private readonly IStringLocalizer<Strings> localizer;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
         /// <param name="localizer">Localization service.</param>
         public AuthorTeamsActivityHandler(
             TeamsFileUpload teamsFileUpload,
-            UserDataRepository userDataRepository,
+            IUserDataRepository userDataRepository,
             IStringLocalizer<Strings> localizer)
         {
             this.userDataRepository = userDataRepository ?? throw new ArgumentNullException(nameof(userDataRepository));

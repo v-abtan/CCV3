@@ -81,7 +81,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Activities
         public async Task<string> SendFileCardActivityAsync(
             [ActivityTrigger](string userId, string notificationId, string fileName) sendData)
         {
-            var user = await this.userDataRepository.GetAsync(UserDataTableNames.UserDataPartition, sendData.userId);
+            var user = await this.userDataRepository.GetAsync(UserDataTableNames.AuthorDataPartition, sendData.userId);
 
             // Set the service URL in the trusted list to ensure the SDK includes the token in the request.
             MicrosoftAppCredentials.TrustServiceUrl(user.ServiceUrl);

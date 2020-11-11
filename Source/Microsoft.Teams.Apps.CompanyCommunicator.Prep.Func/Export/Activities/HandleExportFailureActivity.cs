@@ -114,7 +114,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.Export.Activities
 
         private async Task SendFailureMessageAsync(string userId)
         {
-            var user = await this.userDataRepository.GetAsync(UserDataTableNames.UserDataPartition, userId);
+            var user = await this.userDataRepository.GetAsync(UserDataTableNames.AuthorDataPartition, userId);
 
             // Set the service URL in the trusted list to ensure the SDK includes the token in the request.
             MicrosoftAppCredentials.TrustServiceUrl(user.ServiceUrl);

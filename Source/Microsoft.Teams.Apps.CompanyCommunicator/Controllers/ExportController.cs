@@ -55,7 +55,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
         public async Task<IActionResult> ExportNotificationAsync(string id)
         {
             var userId = this.HttpContext.User.FindFirstValue(Common.Constants.ClaimTypeUserId);
-            var user = await this.userDataRepository.GetAsync(UserDataTableNames.UserDataPartition, userId);
+            var user = await this.userDataRepository.GetAsync(UserDataTableNames.AuthorDataPartition, userId);
             if (user == null)
             {
                 return this.NotFound();
