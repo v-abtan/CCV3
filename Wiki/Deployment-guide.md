@@ -61,8 +61,8 @@ Register two Azure AD application in your tenant's directory: one for author bot
 
 
     At this point you should have the following 5 values:
-    1. Application (client) ID for the bot.
-    2. Client secret for the bot.
+    1. Application (client) ID for the user bot.
+    2. Client secret for the user bot.
     3. Directory (tenant) ID.
     4. Application (client) Id for the author bot.
     5. Client secret for the author bot.
@@ -98,8 +98,8 @@ Register two Azure AD application in your tenant's directory: one for author bot
    * Remember the base resource name that you selected. We will need it later.
 
 1. Update the following fields in the template:
-    1. **Bot Client ID**: The application (client) ID of the Microsoft Teams bot app. (from Step 1)
-    2. **Bot Client Secret**: The client secret of the Microsoft Teams bot app. (from Step 1)
+    1. **User Client ID**: The application (client) ID of the Microsoft Teams user bot app. (from Step 1)
+    2. **User Client Secret**: The client secret of the Microsoft Teams user bot app. (from Step 1)
     3. **Tenant Id**: The tenant ID. (from Step 1)
     4. **Author Client ID**: The application (client) ID of the Microsoft Teams author bot app. (from Step 1)
     5. **Author Client Secret**: The client secret of the Microsoft Teams author bot app. (from Step 1)
@@ -127,14 +127,15 @@ Register two Azure AD application in your tenant's directory: one for author bot
     > If the deployment fails, see [this section](https://github.com/OfficeDev/microsoft-teams-company-communicator-app/wiki/Troubleshooting#1-code-deployment-failure) of the Troubleshooting guide.
 
 1. Once the deployment is successfully completed, go to the deployment's "Outputs" tab, and note down the follwing values. We will need them later.
-    * **botId:** This is the Microsoft Application ID for the Company Communicator app. For the following steps, it will be referred to as `%botId%`.
+    * **authorBotId:** This is the Microsoft Application ID for the Company Communicator app. For the following steps, it will be referred to as `%authorBotId%`.
+    * **userBotId:** This is the Microsoft Application ID for the Company Communicator app. For the following steps, it will be referred to as `%userBotId%`.
     * **appDomain:** This is the base domain for the Company Communicator app. For the following steps, it will be referred to as `%appDomain%`.
 
 > **IMPORTANT:** If you plan to use a custom domain name instead of relying on Azure Front Door, read the instructions [here](Custom-domain-option) before continuing any further.
 
 ## 3. Set-up Authentication
 
-1. Note that you have the `%botId%` and `%appDomain%` values from the previous step (Step 2).
+1. Note that you have the `%authorBotId%`, `%userBotId%` and `%appDomain%` values from the previous step (Step 2).
 
     > If do not have these values, refer [this section](https://github.com/OfficeDev/microsoft-teams-company-communicator-app/wiki/Troubleshooting#2-forgetting-the-botId-or-appDomain) of the Troubleshooting guide for steps to get these values.
 
@@ -223,7 +224,7 @@ Continuing from the Azure AD app registration page where we ended Step 3.
 4. If you are logged in as the Global Administrator, click on the “Grant admin consent for %tenant-name%” button to grant admin consent, else inform your Admin to do the same through the portal.
    <br/>
    Alternatively you may follow the steps below:
-   - Prepare link - https://login.microsoftonline.com/common/adminconsent?client_id=%appId%. Replace the `%appId%` with the `Application (client) ID` of Microsoft Teams bot app (from above).
+   - Prepare link - https://login.microsoftonline.com/common/adminconsent?client_id=%appId%. Replace the `%appId%` with the `Application (client) ID` of Microsoft Teams author bot app (from above).
    - Global Administrator can grant consent using the link above.
 
 ## 5. Create the Teams app packages
@@ -244,11 +245,11 @@ Create two Teams app packages: one to be installed to an Authors team and other 
 
 1. Change the `<<appDomain>>` placholder in the configurationUrl setting to be the `%appDomain%` value e.g. "`https://appName.azurefd.net/configtab`".
 
-1. Change the `<<botId>>` placeholder in the botId setting to be the `%botId%` value - this is your Azure AD application's ID from above. This is the same GUID that you entered in the template under "Bot Client ID". Please note that there are two places in the manifest (for authors) where you will need to update Bot ID.
+1. Change the `<<botId>>` placeholder in the botId setting to be the `%authorBotId%` value - this is your author Azure AD application's ID from above. This is the same GUID that you entered in the template under "Bot Client ID". Please note that there are two places in the manifest (for authors) where you will need to update Bot ID.
 
 1. Change the `<<appDomain>>` placeholder in the validDomains setting to be the `%appDomain%` value e.g. "`appName.azurefd.net`".
 
-1. Change the `<<botId>>` placeholder in the id setting of the webApplicationInfo section to be the `%botId%` value. Change the `<<appDomain>>` placeholder in the resource setting of the webApplicationInfo section to be the `%appDomain%` value e.g. "`api://appName.azurefd.net`".
+1. Change the `<<botId>>` placeholder in the id setting of the webApplicationInfo section to be the `%authorBotId%` value. Change the `<<appDomain>>` placeholder in the resource setting of the webApplicationInfo section to be the `%appDomain%` value e.g. "`api://appName.azurefd.net`".
 
 1. Copy the `manifest_authors.json` file to a file named `manifest.json`.
 
@@ -259,7 +260,7 @@ Create two Teams app packages: one to be installed to an Authors team and other 
 
 1. Delete the `manifest.json` file.
 
-Repeat the steps above but with the file `Manifest\manifest_users.json`. Note: you will not need to change anything for the configurationUrl or webApplicationInfo section because the recipients app does not have the configurable tab. Name the resulting package `company-communicator-users.zip`, so you know that this is the app for the recipients.
+Repeat the steps above but with the file `Manifest\manifest_users.json` and use `%userBotId%` for `<<botId>>` placeholder. Note: you will not need to change anything for the configurationUrl or webApplicationInfo section because the recipients app does not have the configurable tab. Name the resulting package `company-communicator-users.zip`, so you know that this is the app for the recipients.
 
 ## 6. Install the apps in Microsoft Teams
 

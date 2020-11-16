@@ -9,19 +9,19 @@
         "description": "The base name to use for the resources that will be provisioned."
       }
     },
-    "botClientId": {
+    "userClientId": {
       "type": "string",
       "minLength": 36,
       "maxLength": 36,
       "metadata": {
-        "description": "The client ID of the bot Azure AD app, e.g., 123e4567-e89b-12d3-a456-426655440000."
+        "description": "The client ID of the user bot Azure AD app, e.g., 123e4567-e89b-12d3-a456-426655440000."
       }
     },
-    "botClientSecret": {
+    "userClientSecret": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "The client secret of the bot Azure AD app."
+        "description": "The client secret of the user bot Azure AD app."
       }
     },
     "authorClientId": {
@@ -298,11 +298,11 @@
             },
             {
               "name": "UserAppId",
-              "value": "[parameters('botClientId')]"
+              "value": "[parameters('userClientId')]"
             },
             {
               "name": "UserAppPassword",
-              "value": "[parameters('botClientSecret')]"
+              "value": "[parameters('userClientSecret')]"
             },
             {
               "name": "AuthorAppId",
@@ -448,7 +448,7 @@
         "displayName": "[parameters('appDisplayName')]",
         "description": "[parameters('appDescription')]",
         "iconUrl": "[parameters('appIconUrl')]",
-        "msaAppId": "[parameters('botClientId')]",
+        "msaAppId": "[parameters('userClientId')]",
         "endpoint": "[concat(variables('botAppUrl'), '/api/messages/user')]",
         "developerAppInsightKey": "[reference(resourceId('Microsoft.Insights/components', variables('appInsightsName')), '2015-05-01').InstrumentationKey]"
       },
@@ -650,11 +650,11 @@
             },
             {
               "name": "UserAppId",
-              "value": "[parameters('botClientId')]"
+              "value": "[parameters('userClientId')]"
             },
             {
               "name": "UserAppPassword",
-              "value": "[parameters('botClientSecret')]"
+              "value": "[parameters('userClientSecret')]"
             },
             {
               "name": "TenantId",
@@ -757,11 +757,11 @@
             },
             {
               "name": "UserAppId",
-              "value": "[parameters('botClientId')]"
+              "value": "[parameters('userClientId')]"
             },
             {
               "name": "UserAppPassword",
-              "value": "[parameters('botClientSecret')]"
+              "value": "[parameters('userClientSecret')]"
             },
             {
               "name": "StorageAccountConnectionString",
@@ -864,11 +864,11 @@
             },
             {
               "name": "UserAppId",
-              "value": "[parameters('botClientId')]"
+              "value": "[parameters('userClientId')]"
             },
             {
               "name": "UserAppPassword",
-              "value": "[parameters('botClientSecret')]"
+              "value": "[parameters('userClientSecret')]"
             },
             {
               "name": "CleanUpScheduleTriggerTime",
@@ -1035,9 +1035,13 @@
     }
   ],
   "outputs": {
-    "botId": {
+    "authorBotId": {
       "type": "string",
-      "value": "[parameters('botClientId')]"
+      "value": "[parameters('authorClientId')]"
+    },
+	"userBotId": {
+      "type": "string",
+      "value": "[parameters('userClientId')]"
     },
     "appDomain": {
       "type": "string",
