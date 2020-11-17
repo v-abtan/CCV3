@@ -31,7 +31,7 @@ To begin, you will need:
 
 ## 1. Register Azure AD application
 
-Register an Azure AD application in your tenant's directory.
+Register two Azure AD application in your tenant's directory: one for author bot, and another for user bot.
 
 1. Log in to the Azure Portal for your subscription, and go to the [App registrations](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) blade.
 
@@ -54,10 +54,18 @@ Register an Azure AD application in your tenant's directory.
 
 1. Once the client secret is created, copy its **Value**; we will need it later.
 
-    At this point you should have the following 3 values:
+1. Go back to "App registrations", then repeat steps 2-5 to create another Azure AD application for the author bot.
+    - **Name**: Name of your Teams App - if you are following the template for a default deployment, we recommend "Company Communicator Author".
+    - **Supported account types**: Select "Accounts in any organizational directory".
+    - Leave the "Redirect URI" field blank for now.
+
+
+    At this point you should have the following 5 values:
     1. Application (client) ID for the bot.
     2. Client secret for the bot.
     3. Directory (tenant) ID.
+    4. Application (client) Id for the author bot.
+    5. Client secret for the author bot.
 
     We recommend that you copy the values, we will need them later.
 
@@ -93,9 +101,12 @@ Register an Azure AD application in your tenant's directory.
     1. **Bot Client ID**: The application (client) ID of the Microsoft Teams bot app. (from Step 1)
     2. **Bot Client Secret**: The client secret of the Microsoft Teams bot app. (from Step 1)
     3. **Tenant Id**: The tenant ID. (from Step 1)
-    4. **Proactively Install User App [Optional]**: Default value is `true`. You may set it to `false` if you want to disable the feature.
-    5. **User App ExternalId [Optional]**: Default value is `148a66bb-e83d-425a-927d-09f4299a9274`. This **MUST** be the same `id` that is in the Teams app manifest for the user app.
-    6. **DefaultCulture, SupportedCultures [Optional]**: By default the application contains `en-US` resources. You may add/update the resources for other locales and update this configuration if desired.
+    4. **Author Client ID**: The application (client) ID of the Microsoft Teams author bot app. (from Step 1)
+    5. **Author Client Secret**: The client secret of the Microsoft Teams author bot app. (from Step 1)
+    6. **Tenant Id**: The tenant ID. (from Step 1)
+    7. **Proactively Install User App [Optional]**: Default value is `true`. You may set it to `false` if you want to disable the feature.
+    8. **User App ExternalId [Optional]**: Default value is `148a66bb-e83d-425a-927d-09f4299a9274`. This **MUST** be the same `id` that is in the Teams app manifest for the user app.
+    9. **DefaultCulture, SupportedCultures [Optional]**: By default the application contains `en-US` resources. You may add/update the resources for other locales and update this configuration if desired.
 
     > **Note:** Make sure that the values are copied as-is, with no extra spaces. The template checks that GUIDs are exactly 36 characters.
 
@@ -127,7 +138,7 @@ Register an Azure AD application in your tenant's directory.
 
     > If do not have these values, refer [this section](https://github.com/OfficeDev/microsoft-teams-company-communicator-app/wiki/Troubleshooting#2-forgetting-the-botId-or-appDomain) of the Troubleshooting guide for steps to get these values.
 
-1. Go to **App Registrations** page [here](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) and open the app you created (in Step 1) from the application list.
+1. Go to **App Registrations** page [here](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) and open the author app you created (in Step 1) from the application list.
 
 1. Under **Manage**, click on **Authentication** to bring up authentication settings.
 
