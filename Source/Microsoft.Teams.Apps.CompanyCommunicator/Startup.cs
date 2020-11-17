@@ -189,7 +189,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
             // Add miscellaneous dependencies.
             services.AddTransient<TableRowKeyGenerator>();
             services.AddTransient<AdaptiveCardCreator>();
-            services.AddSingleton<IAppSettingsService, AppSettingsService>();
+            services.AddTransient<IAppSettingsService, AppSettingsService>();
         }
 
         /// <summary>
