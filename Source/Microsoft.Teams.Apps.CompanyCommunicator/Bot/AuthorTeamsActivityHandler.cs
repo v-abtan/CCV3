@@ -13,9 +13,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
     using Microsoft.Bot.Schema;
     using Microsoft.Bot.Schema.Teams;
     using Microsoft.Extensions.Localization;
-    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.UserData;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Resources;
-    using Microsoft.Teams.Apps.CompanyCommunicator.Repositories.Extensions;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.User;
 
     /// <summary>
     /// Company Communicator Author Bot.
@@ -25,22 +25,26 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
     {
         private const string PersonalType = "personal";
         private readonly TeamsFileUpload teamsFileUpload;
-        private readonly IUserDataRepository userDataRepository;
+        private readonly IUserDataService userDataService;
+        private readonly IAppSettingsService appSettingsService;
         private readonly IStringLocalizer<Strings> localizer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorTeamsActivityHandler"/> class.
         /// </summary>
         /// <param name="teamsFileUpload">File upload service.</param>
-        /// <param name="userDataRepository">User data repository.</param>
+        /// <param name="userDataService">User data service.</param>
+        /// <param name="appSettingsService">App Settings service.</param>
         /// <param name="localizer">Localization service.</param>
         public AuthorTeamsActivityHandler(
             TeamsFileUpload teamsFileUpload,
-            IUserDataRepository userDataRepository,
+            IUserDataService userDataService,
+            IAppSettingsService appSettingsService,
             IStringLocalizer<Strings> localizer)
         {
-            this.userDataRepository = userDataRepository ?? throw new ArgumentNullException(nameof(userDataRepository));
+            this.userDataService = userDataService ?? throw new ArgumentNullException(nameof(userDataService));
             this.teamsFileUpload = teamsFileUpload ?? throw new ArgumentNullException(nameof(teamsFileUpload));
+            this.appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
             this.localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
         }
 
@@ -73,13 +77,16 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
 
             if (activity.Conversation.ConversationType.Equals(PersonalType))
             {
-                await this.userDataRepository.SaveAuthorDataAsync(activity);
+                await this.userDataService.SaveAuthorDataAsync(activity);
             }
 
             if (activity.MembersRemoved != null)
             {
-                await this.userDataRepository.RemoveAuthorDataAsync(activity);
+                await this.userDataService.RemoveAuthorDataAsync(activity);
             }
+
+            // Update service url app setting.
+            await this.UpdateServiceUrl(activity.ServiceUrl);
         }
 
         /// <summary>
@@ -144,5 +151,17 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
             await turnContext.SendActivityAsync(reply, cancellationToken);
         }
 
+        private async Task UpdateServiceUrl(string serviceUrl)
+        {
+            // Check if service url is already synced.
+            var cachedUrl = await this.appSettingsService.GetServiceUrlAsync();
+            if (!string.IsNullOrWhiteSpace(cachedUrl))
+            {
+                return;
+            }
+
+            // Update service url.
+            await this.appSettingsService.SetServiceUrlAsync(serviceUrl);
+        }
     }
 }

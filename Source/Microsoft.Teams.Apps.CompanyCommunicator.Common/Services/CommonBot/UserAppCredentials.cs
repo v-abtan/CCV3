@@ -1,4 +1,4 @@
-﻿// <copyright file="UserMicrosoftAppCredentials.cs" company="Microsoft">
+﻿// <copyright file="UserAppCredentials.cs" company="Microsoft">
 // Copyright (c) Microsoft. All rights reserved.
 // </copyright>
 
@@ -10,13 +10,13 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.CommonBot
     /// <summary>
     /// A user Microsoft app credentials object.
     /// </summary>
-    public class UserMicrosoftAppCredentials : MicrosoftAppCredentials
+    public class UserAppCredentials : MicrosoftAppCredentials
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserMicrosoftAppCredentials"/> class.
+        /// Initializes a new instance of the <see cref="UserAppCredentials"/> class.
         /// </summary>
         /// <param name="botOptions">The bot options.</param>
-        public UserMicrosoftAppCredentials(IOptions<BotOptions> botOptions)
+        public UserAppCredentials(IOptions<BotOptions> botOptions)
             : base(
                   appId: botOptions.Value.UserAppId,
                   password: botOptions.Value.UserAppPassword)

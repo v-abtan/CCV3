@@ -97,7 +97,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func
                 Common.Constants.BlobContainerName));
 
             // Add bot services.
-            builder.Services.AddSingleton<UserMicrosoftAppCredentials>();
+            builder.Services.AddSingleton<UserAppCredentials>();
             builder.Services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
             builder.Services.AddSingleton<BotFrameworkHttpAdapter>();
 
@@ -112,7 +112,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func
             builder.Services.AddSingleton<INotificationDataRepository, NotificationDataRepository>();
             builder.Services.AddSingleton<ISentNotificationDataRepository, SentNotificationDataRepository>();
             builder.Services.AddSingleton<IUserDataRepository, UserDataRepository>();
-            builder.Services.AddSingleton<IExportDataRepository,ExportDataRepository>();
+            builder.Services.AddSingleton<IExportDataRepository, ExportDataRepository>();
 
             // Add service bus message queues.
             builder.Services.AddSingleton<IDataQueue, DataQueue>();

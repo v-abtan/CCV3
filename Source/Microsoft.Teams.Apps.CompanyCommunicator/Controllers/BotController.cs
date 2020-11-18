@@ -4,6 +4,7 @@
 
 namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder;
@@ -33,9 +34,9 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Controllers
             AuthorTeamsActivityHandler authorBot,
             UserTeamsActivityHandler userBot)
         {
-            this.adapter = adapter;
-            this.authorBot = authorBot;
-            this.userBot = userBot;
+            this.adapter = adapter ?? throw new ArgumentNullException(nameof(adapter));
+            this.authorBot = authorBot ?? throw new ArgumentNullException(nameof(authorBot));
+            this.userBot = userBot ?? throw new ArgumentNullException(nameof(userBot));
         }
 
         /// <summary>

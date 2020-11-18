@@ -115,7 +115,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func
             builder.Services.AddTransient<HandleExportFailureActivity>();
 
             // Add bot services.
-            builder.Services.AddSingleton<UserMicrosoftAppCredentials>();
+            builder.Services.AddSingleton<UserAppCredentials>();
             builder.Services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
             builder.Services.AddSingleton<BotFrameworkHttpAdapter>();
 
@@ -129,7 +129,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func
             builder.Services.AddSingleton<IAppConfigRepository, AppConfigRepository>();
 
             // Add service bus message queues.
-            builder.Services.AddSingleton<ISendQueue,SendQueue>();
+            builder.Services.AddSingleton<ISendQueue, SendQueue>();
             builder.Services.AddSingleton<IDataQueue, DataQueue>();
             builder.Services.AddSingleton<IExportQueue, ExportQueue>();
 
