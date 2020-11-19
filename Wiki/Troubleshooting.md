@@ -41,7 +41,8 @@ The resource type `Microsoft.Web/sites/sourcecontrols` failed to deploy. The tra
 
 If you had to do this, you may not have received the **botId** and **appDomain** values at the end of the deployment. To find them, go to the "Configuration" section of your Web App.
 
-* **botId:** This is the Microsoft Application ID for the Company Communicator app. It can be found in the "MicrosoftAppId" field of your configuration e.g. 5630f8a2-c2a0-4cda-bdfa-c2fa87654321. For the following steps, it will be referred to as %botId%.
+* **authorBotId:** This is the author Microsoft Application ID for the Company Communicator app. It can be found in the "AuthorAppId" field of your configuration e.g. 5630f8a2-c2a0-4cda-bdfa-c2fa87654321. For the following steps, it will be referred to as %authorBotId%.
+* **userBotId:** This is the user Microsoft Application ID for the Company Communicator app. It can be found in the "UserAppId" field of your configuration e.g. 5630f8a2-c2a0-4cda-bdfa-c2fa87654321. For the following steps, it will be referred to as %userBotId%.
 * **appDomain:** This is the base domain for the Company Communicator app. It is the value in the "AzureAd:ApplicationIdURI" field of your configuration without the "api://" e.g. appName.azurefd.net. For the following steps, it will be referred to as %appDomain%.
 
 We are currently looking into how to make this process more resilient to intermittent failures.
@@ -50,7 +51,8 @@ We are currently looking into how to make this process more resilient to intermi
 ## 2. Forgetting the botId or appDomain
 If you forgot the your **botId** and **appDomain** values from the end of the deployment. You can find them in the "Configuration" section of your Web App.
 
-* **botId:** This is the Microsoft Application ID for the Company Communicator app. It can be found in the "MicrosoftAppId" field of your configuration e.g. 5630f8a2-c2a0-4cda-bdfa-c2fa87654321. For the following steps, it will be referred to as %botId%.
+* **authorBotId:** This is the author Microsoft Application ID for the Company Communicator app. It can be found in the "AuthorAppId" field of your configuration e.g. 5630f8a2-c2a0-4cda-bdfa-c2fa87654321. For the following steps, it will be referred to as %authorBotId%.
+* **userBotId:** This is the user Microsoft Application ID for the Company Communicator app. It can be found in the "UserAppId" field of your configuration e.g. 5630f8a2-c2a0-4cda-bdfa-c2fa87654321. For the following steps, it will be referred to as %userBotId%.
 * **appDomain:** This is the base domain for the Company Communicator app. It is the value in the "AzureAd:ApplicationIdURI" field of your configuration without the "api://" e.g. appName.azurefd.net. For the following steps, it will be referred to as %appDomain%.
 
 
