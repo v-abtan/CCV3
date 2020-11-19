@@ -103,10 +103,9 @@ Register two Azure AD application in your tenant's directory: one for author bot
     3. **Tenant Id**: The tenant ID. (from Step 1)
     4. **Author Client ID**: The application (client) ID of the Microsoft Teams author bot app. (from Step 1)
     5. **Author Client Secret**: The client secret of the Microsoft Teams author bot app. (from Step 1)
-    6. **Tenant Id**: The tenant ID. (from Step 1)
-    7. **Proactively Install User App [Optional]**: Default value is `true`. You may set it to `false` if you want to disable the feature.
-    8. **User App ExternalId [Optional]**: Default value is `148a66bb-e83d-425a-927d-09f4299a9274`. This **MUST** be the same `id` that is in the Teams app manifest for the user app.
-    9. **DefaultCulture, SupportedCultures [Optional]**: By default the application contains `en-US` resources. You may add/update the resources for other locales and update this configuration if desired.
+    6. **Proactively Install User App [Optional]**: Default value is `true`. You may set it to `false` if you want to disable the feature.
+    7. **User App ExternalId [Optional]**: Default value is `148a66bb-e83d-425a-927d-09f4299a9274`. This **MUST** be the same `id` that is in the Teams app manifest for the user app.
+    8. **DefaultCulture, SupportedCultures [Optional]**: By default the application contains `en-US` resources. You may add/update the resources for other locales and update this configuration if desired.
 
     > **Note:** Make sure that the values are copied as-is, with no extra spaces. The template checks that GUIDs are exactly 36 characters.
 
@@ -245,7 +244,7 @@ Create two Teams app packages: one to be installed to an Authors team and other 
 
 1. Change the `<<appDomain>>` placholder in the configurationUrl setting to be the `%appDomain%` value e.g. "`https://appName.azurefd.net/configtab`".
 
-1. Change the `<<botId>>` placeholder in the botId setting to be the `%authorBotId%` value - this is your author Azure AD application's ID from above. This is the same GUID that you entered in the template under "Bot Client ID". Please note that there are two places in the manifest (for authors) where you will need to update Bot ID.
+1. Change the `<<botId>>` placeholder in the botId setting to be the `%authorBotId%` value - this is your author Azure AD application's ID from above. This is the same GUID that you entered in the template under "Author Client ID". Please note that there are two places in the manifest (for authors) where you will need to update Bot ID.
 
 1. Change the `<<appDomain>>` placeholder in the validDomains setting to be the `%appDomain%` value e.g. "`appName.azurefd.net`".
 
