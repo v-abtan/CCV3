@@ -39,21 +39,6 @@
         "description": "The client secret of the author bot Azure AD app."
       }
     },
-    "authorClientId": {
-      "type": "string",
-      "minLength": 36,
-      "maxLength": 36,
-      "metadata": {
-        "description": "The client ID of the author bot Azure AD app, e.g., 123e4567-e89b-12d3-a456-426655440000."
-      }
-    },
-    "authorClientSecret": {
-      "type": "securestring",
-      "minLength": 1,
-      "metadata": {
-        "description": "The client secret of the author bot Azure AD app."
-      }
-    },
     "senderUPNList": {
       "type": "string",
       "minLength": 1,
@@ -158,7 +143,7 @@
         "2",
         "3"
       ],
-      "defaultValue": "2",
+      "defaultValue": "1",
       "metadata": {
         "description": "The size of the hosting plan (small, medium, or large)."
       }
