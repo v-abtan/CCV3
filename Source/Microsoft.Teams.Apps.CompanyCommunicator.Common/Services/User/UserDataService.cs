@@ -4,6 +4,7 @@
 
 namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.User
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Bot.Schema;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Repositories.UserData;
@@ -77,7 +78,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.User
             var rowKey = activity?.From?.AadObjectId;
             if (rowKey == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(rowKey));
             }
 
             return new UserDataEntity
