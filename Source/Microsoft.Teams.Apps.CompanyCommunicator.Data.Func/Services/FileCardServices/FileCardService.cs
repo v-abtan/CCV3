@@ -41,9 +41,15 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.FileCardSe
             IUserDataRepository userDataRepository,
             IStringLocalizer<Strings> localizer)
         {
-            this.botAdapter = botAdapter;
-            this.authorAppId = botOptions.Value.AuthorAppId;
-            this.userDataRepository = userDataRepository;
+            this.botAdapter = botAdapter ?? throw new ArgumentNullException(nameof(botAdapter));
+            var options = botOptions ?? throw new ArgumentNullException(nameof(botOptions));
+            if (string.IsNullOrEmpty(options.Value.AuthorAppId))
+            {
+                throw new ApplicationException("AuthorAppId setting is missing in the configuration.");
+            }
+
+            this.authorAppId = options.Value.AuthorAppId;
+            this.userDataRepository = userDataRepository ?? throw new ArgumentNullException(nameof(userDataRepository));
             this.localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
         }
 

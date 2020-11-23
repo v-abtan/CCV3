@@ -4,6 +4,7 @@
 
 namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.CommonBot
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.CommonBot
         /// <param name="botOptions">bot options.</param>
         public ConfigurationCredentialProvider(IOptions<BotOptions> botOptions)
         {
+            botOptions = botOptions ?? throw new ArgumentNullException(nameof(botOptions));
             this.credentials = new Dictionary<string, string>();
             if (!string.IsNullOrEmpty(botOptions.Value.UserAppId))
             {
