@@ -18,7 +18,7 @@ Cumulative improvements in Company Communicator App.
 #### 3.1 (TBD)
 ##### Changes intoduced
 - Separate Bots for User and Author.
-- Automated deployment using powershell script.
+- Automated deployment using Powershell script.
 - Improved Test coverage.
 
 #### 3.0 (Oct 29, 2020)

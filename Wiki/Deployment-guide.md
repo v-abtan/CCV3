@@ -190,7 +190,7 @@ Register two Azure AD application in your tenant's directory: one for author bot
         },
     ```
 
-1. Click **Save** to commit your changes.
+    2. Click **Save** to commit your changes.
 
 ## 4. Add Permissions to your app
 

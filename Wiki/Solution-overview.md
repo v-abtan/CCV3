@@ -26,7 +26,7 @@ The tab's front-end gets its data from web APIs implemented by the same app serv
 
 ### User Bot endpoint
 
-The app service exposes a bot messaging endpoint, which receives activities from Bot Framework as the user install the app.
+The app service exposes a bot messaging endpoint, which receives activities from Bot Framework when a user installs the User application.
 
 **conversationUpdate:** When the app is installed in team, or personally by users, the [bot is notified](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/bots/bots-notifications) via a conversationUpdate activity. The bot uses these messages to keep track of the users and teams that have installed the app:
 * The list of teams is used to populate the team picker in the compose UX.
@@ -36,9 +36,9 @@ The app service exposes a bot messaging endpoint, which receives activities from
 
 ### Author Bot endpoint 
 
-The app service exposes a bot messaging endpoint, which receives activities from Bot Framework as the author interacts with the app.
+The app service exposes a bot messaging endpoint, which receives activities from Bot Framework when an author takes any action on messages sent by the Author bot.
 
-**conversationUpdate:** When the app is installed in team, or personally by authors, the [bot is notified](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/bots/bots-notifications) via a conversationUpdate activity. The bot uses these messages to keep track of the authors that have installed the app:
+**conversationUpdate:** When the app is installed in team, the [bot is notified](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/bots/bots-notifications) via a conversationUpdate activity. The bot uses these messages to keep track of the authors that have installed the app.
 
 **fileConsent:** When the author accepts/declines the file consent card sent by the bot, Team sends the bot a `fileConsentAccept` or `fileConsentDecline` [event](https://docs.microsoft.com/en-us/microsoftteams/platform/bots/how-to/conversations/send-and-receive-files?tabs=dotnet). On author's consent file is uploaded to the author's OneDrive.
 
