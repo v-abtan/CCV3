@@ -23,7 +23,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
     /// </summary>
     public class AuthorTeamsActivityHandler : TeamsActivityHandler
     {
-        private const string PersonalType = "personal";
+        private const string ChannelType = "channel";
         private readonly TeamsFileUpload teamsFileUpload;
         private readonly IUserDataService userDataService;
         private readonly IAppSettingsService appSettingsService;
@@ -75,7 +75,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Bot
                 return;
             }
 
-            if (activity.Conversation.ConversationType.Equals(PersonalType))
+            if (activity.Conversation.ConversationType.Equals(ChannelType))
             {
                 await this.userDataService.SaveAuthorDataAsync(activity);
             }

@@ -13,6 +13,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+    using Microsoft.Bot.Builder.Integration.AspNet.Core;
     using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.MessageQueues.ExportQueue;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.MessageQueues.PrepareToSendQueue;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.MicrosoftGraph;
+    using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.Teams;
     using Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.User;
     using Microsoft.Teams.Apps.CompanyCommunicator.Controllers;
     using Microsoft.Teams.Apps.CompanyCommunicator.Controllers.Options;
@@ -157,6 +159,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
             services.AddTransient<CompanyCommunicatorBotFilterMiddleware>();
             services.AddSingleton<CompanyCommunicatorBotAdapter>();
+            services.AddSingleton<BotFrameworkHttpAdapter>();
 
             // Add repositories.
             services.AddSingleton<ITeamDataRepository, TeamDataRepository>();
@@ -190,6 +193,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator
             services.AddTransient<AdaptiveCardCreator>();
             services.AddTransient<IAppSettingsService, AppSettingsService>();
             services.AddTransient<IUserDataService, UserDataService>();
+            services.AddTransient<ITeamMembersService, TeamMembersService>();
         }
 
         /// <summary>

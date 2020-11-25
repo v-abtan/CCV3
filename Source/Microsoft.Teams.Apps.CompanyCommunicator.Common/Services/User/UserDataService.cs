@@ -22,7 +22,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.User
         /// <param name="userDataRepository">User data repository.</param>
         public UserDataService(IUserDataRepository userDataRepository)
         {
-            this.userDataRepository = userDataRepository;
+            this.userDataRepository = userDataRepository ?? throw new ArgumentNullException(nameof(userDataRepository));
         }
 
         /// <inheritdoc/>
@@ -78,7 +78,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.User
             var rowKey = activity?.From?.AadObjectId;
             if (rowKey == null)
             {
-                throw new ArgumentNullException(nameof(rowKey));
+                throw new ArgumentNullException(nameof(activity));
             }
 
             return new UserDataEntity
@@ -87,7 +87,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Common.Services.User
                 RowKey = activity?.From?.AadObjectId,
                 AadId = activity?.From?.AadObjectId,
                 UserId = activity?.From?.Id,
-                ConversationId = activity?.Conversation?.Id,
+                ConversationId = partitionKey.Equals(UserDataTableNames.UserDataPartition) ? activity?.Conversation?.Id : null,
                 ServiceUrl = activity?.ServiceUrl,
                 TenantId = activity?.Conversation?.TenantId,
             };

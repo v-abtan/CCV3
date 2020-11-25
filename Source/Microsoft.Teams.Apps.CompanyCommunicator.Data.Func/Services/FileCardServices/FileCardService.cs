@@ -45,7 +45,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Data.Func.Services.FileCardSe
             var options = botOptions ?? throw new ArgumentNullException(nameof(botOptions));
             if (string.IsNullOrEmpty(options.Value.AuthorAppId))
             {
-                throw new ApplicationException("AuthorAppId setting is missing in the configuration.");
+                throw new ArgumentException("AuthorAppId setting is missing in the configuration.");
             }
 
             this.authorAppId = options.Value.AuthorAppId;

@@ -139,7 +139,7 @@ namespace Microsoft.Teams.Apps.CompanyCommunicator.Prep.Func.PreparingToSend
             try
             {
                 // Create conversation.
-                var response = await this.conversationService.CreateConversationAsync(
+                var response = await this.conversationService.CreateUserConversationAsync(
                     teamsUserId: recipient.UserId,
                     tenantId: recipient.TenantId,
                     serviceUrl: recipient.ServiceUrl,
