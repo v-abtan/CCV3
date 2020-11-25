@@ -311,7 +311,6 @@ function DeployARMTemplate {
         "$($parameters.BaseResourceName.Value)-function", #function
         "$($parameters.BaseResourceName.Value)-data-function" #data-function
         )
-        $appServicesNames | ForEach-Object {}
         foreach ($appService in $appServicesNames) {
             Write-Host "Sync $appService code from latest version"
             az webapp deployment source sync --name $_ --resource-group $parameters.ResourceGroupName.Value
