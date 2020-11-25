@@ -313,7 +313,7 @@ function DeployARMTemplate {
         )
         foreach ($appService in $appServicesNames) {
             Write-Host "Sync $appService code from latest version"
-            az webapp deployment source sync --name $_ --resource-group $parameters.ResourceGroupName.Value
+            az webapp deployment source sync --name $appService --resource-group $parameters.ResourceGroupName.Value
         }
         
         return $value
