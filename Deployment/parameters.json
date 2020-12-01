@@ -11,6 +11,10 @@
         "Value": "<<value>>",
         "Description": "The ID of the tenant to which the app will be deployed."
     },
+    "allowedTenantId": {
+        "Value": "<<value>>",
+        "Description": "(Optional) The ID of the tenant to which the app will be used. Script will use tenantId value if this is not specified"
+    },
     "subscriptionId": {
         "Value": "<<value>>",
         "Description": "Subscription ID"

@@ -6,6 +6,21 @@ function ValidateSecureUrl {
     return ($url -match "https:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 }
 
+function Test-IsGuid
+{
+    [OutputType([bool])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string]$ObjectGuid
+    )
+
+    # Define verification regex
+    [regex]$guidRegex = '(?im)^[{(]?[0-9A-F]{8}[-]?(?:[0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$'
+
+    # Check guid against regex
+    return $ObjectGuid -match $guidRegex
+}
 
 function ValidateUrlParameters {
     $isValidUrl = $true
@@ -539,6 +554,9 @@ function GenerateAppManifestPackage {
 
 # Parse & assign parameters
     $parameters = $parametersListContent | ConvertFrom-Json
+    if($false -eq (Test-IsGuid -ObjectGuid $parameters.allowedTenantId.Value)){
+        $parameters.allowedTenantId.Value = $parameters.tenantId.Value
+    }
     
     
 # Validate Https Urls parameters.
@@ -600,6 +618,9 @@ function GenerateAppManifestPackage {
 #Log out to avoid tokens caching
     $logOut = az logout
     $disAzAcc = Disconnect-AzAccount
+
+    $user = az login
+    $sp = az ad sp create --id $appCred.appId
 
 # Open manifest folder
     Invoke-Item ..\Manifest\
