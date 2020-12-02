@@ -623,10 +623,12 @@ function GenerateAppManifestPackage {
 
     # App template is deployed on tenant A and used in tenant B
     if($parameters.allowedTenantId.Value -ne $parameters.tenantId.Value){
+        Write-Host "Please login to the tenant where this app template will be used in MS-Teams."
+        $user = az login --tenant $parameters.allowedTenantId.Value
         $sp = az ad sp list --filter "appId eq '$($appCred.appId)'"
         if(0 -eq ($sp | ConvertFrom-Json).length){
-            $user = az login --tenant $parameters.allowedTenantId.Value
             $sp = az ad sp create --id $appCred.appId
+            Write-Host "Please inform your admin to consent the app permissions from this link https://login.microsoftonline.com/common/adminconsent?client_id=$($appCred.appId)"
             # TODO .. Grant admin consent in tenant B for the service principal/app
         }
     }
