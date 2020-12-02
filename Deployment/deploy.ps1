@@ -309,7 +309,7 @@ function DeployARMTemplate {
         
         # Deploy ARM templates
         Write-Host "Deploying app services, Azure function, bot service, and other supporting resources..." -ForegroundColor Yellow
-        az deployment group create --resource-group $parameters.ResourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file 'azuredeploy.json' --parameters "baseResourceName=$($parameters.baseResourceName.Value)" "botClientId=$appId" "botClientSecret=$secret" "senderUPNList=$($parameters.senderUPNList.Value)" "customDomainOption=$($parameters.customDomainOption.Value)" "appDisplayName=$($parameters.appDisplayName.Value)" "appDescription=$($parameters.appDescription.Value)" "appIconUrl=$($parameters.appIconUrl.Value)" "tenantId=$($parameters.tenantId.Value)" "hostingPlanSku=$($parameters.hostingPlanSku.Value)" "hostingPlanSize=$($parameters.hostingPlanSize.Value)" "location=$($parameters.location.Value)" "gitRepoUrl=$($parameters.gitRepoUrl.Value)" "gitBranch=$($parameters.gitBranch.Value)" "ProactivelyInstallUserApp=$($parameters.proactivelyInstallUserApp.Value)" "UserAppExternalId=$($parameters.userAppExternalId.Value)" "DefaultCulture=$($parameters.defaultCulture.Value)" "SupportedCultures=$($parameters.supportedCultures.Value)"
+        az deployment group create --resource-group $parameters.ResourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file 'azuredeploy.json' --parameters "baseResourceName=$($parameters.baseResourceName.Value)" "botClientId=$appId" "botClientSecret=$secret" "senderUPNList=$($parameters.senderUPNList.Value)" "customDomainOption=$($parameters.customDomainOption.Value)" "appDisplayName=$($parameters.appDisplayName.Value)" "appDescription=$($parameters.appDescription.Value)" "appIconUrl=$($parameters.appIconUrl.Value)" "tenantId=$($parameters.allowedTenantId.Value)" "hostingPlanSku=$($parameters.hostingPlanSku.Value)" "hostingPlanSize=$($parameters.hostingPlanSize.Value)" "location=$($parameters.location.Value)" "gitRepoUrl=$($parameters.gitRepoUrl.Value)" "gitBranch=$($parameters.gitBranch.Value)" "ProactivelyInstallUserApp=$($parameters.proactivelyInstallUserApp.Value)" "UserAppExternalId=$($parameters.userAppExternalId.Value)" "DefaultCulture=$($parameters.defaultCulture.Value)" "SupportedCultures=$($parameters.supportedCultures.Value)"
         if ($LASTEXITCODE -ne 0) {
             CollectARMDeploymentLogs
             Throw "ERROR: ARM template deployment error."
@@ -554,7 +554,9 @@ function GenerateAppManifestPackage {
 
 # Parse & assign parameters
     $parameters = $parametersListContent | ConvertFrom-Json
-    if($false -eq (Test-IsGuid -ObjectGuid $parameters.allowedTenantId.Value)){
+    
+    # If allowedTenantId is empty or invalid, then use original tenantId
+    if([string]::IsNullOrEmpty($parameters.allowedTenantId.Value) -or ($false -eq (Test-IsGuid -ObjectGuid $parameters.allowedTenantId.Value))){
         $parameters.allowedTenantId.Value = $parameters.tenantId.Value
     }
     
@@ -619,9 +621,16 @@ function GenerateAppManifestPackage {
     $logOut = az logout
     $disAzAcc = Disconnect-AzAccount
 
-    $user = az login
-    $sp = az ad sp create --id $appCred.appId
-
+    # App template is deployed on tenant A and used in tenant B
+    if($parameters.allowedTenantId.Value -ne $parameters.tenantId.Value){
+        $sp = az ad sp list --filter "appId eq '$($appCred.appId)'"
+        if(0 -eq ($sp | ConvertFrom-Json).length){
+            $user = az login --tenant $parameters.allowedTenantId.Value
+            $sp = az ad sp create --id $appCred.appId
+            # TODO .. Grant admin consent in tenant B for the service principal/app
+        }
+    }
+    
 # Open manifest folder
     Invoke-Item ..\Manifest\
 
