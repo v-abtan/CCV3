@@ -325,6 +325,23 @@ function DeployARMTemplate {
     }
 }
 
+# Create AD App principal if app is used in other tenants
+function CreateAdAppPrincipal {
+    Param(
+        [Parameter(Mandatory = $true)] $allowedTenantId,
+        [Parameter(Mandatory = $true)] $appId
+    )
+
+    Write-Host "Please login to the tenant where this app template will be used in MS-Teams."
+    $user = az login --tenant $allowedTenantId
+    $sp = az ad sp list --filter "appId eq '$appId'"
+    if(0 -eq ($sp | ConvertFrom-Json).length){
+        Write-Host "AZure AD app principal will be created in tenant ($allowedTenantId)"
+        $sp = az ad sp create --id $appId
+    }
+    Write-Host "Please inform your admin to consent the app permissions from this link https://login.microsoftonline.com/common/adminconsent?client_id=$appId"
+}    
+
 # AD app update. Assigning Admin-consent,RedirectUris,IdentifierUris,Optionalclaim etc. 
 function ADAppUpdate {
     Param(
@@ -623,14 +640,7 @@ function GenerateAppManifestPackage {
 
     # App template is deployed on tenant A and used in tenant B
     if($parameters.allowedTenantId.Value -ne $parameters.tenantId.Value){
-        Write-Host "Please login to the tenant where this app template will be used in MS-Teams."
-        $user = az login --tenant $parameters.allowedTenantId.Value
-        $sp = az ad sp list --filter "appId eq '$($appCred.appId)'"
-        if(0 -eq ($sp | ConvertFrom-Json).length){
-            $sp = az ad sp create --id $appCred.appId
-            Write-Host "Please inform your admin to consent the app permissions from this link https://login.microsoftonline.com/common/adminconsent?client_id=$($appCred.appId)"
-            # TODO .. Grant admin consent in tenant B for the service principal/app
-        }
+        CreateAdAppPrincipal $parameters.allowedTenantId.Value $appCred.appId
     }
     
 # Open manifest folder
