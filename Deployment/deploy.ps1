@@ -712,7 +712,7 @@ function GenerateAppManifestPackage {
 
     # App template is deployed on tenant A and used in tenant B
     if($parameters.allowedTenantId.Value -ne $parameters.tenantId.Value){
-        CreateAdAppPrincipal $parameters.allowedTenantId.Value $appCred.appId
+        CreateAdAppPrincipal $parameters.allowedTenantId.Value $authorAppCred.appId
     }
     
 # Open manifest folder
