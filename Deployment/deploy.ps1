@@ -6,6 +6,21 @@ function ValidateSecureUrl {
     return ($url -match "https:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 }
 
+function Test-IsGuid
+{
+    [OutputType([bool])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string]$ObjectGuid
+    )
+
+    # Define verification regex
+    [regex]$guidRegex = '(?im)^[{(]?[0-9A-F]{8}[-]?(?:[0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$'
+
+    # Check guid against regex
+    return $ObjectGuid -match $guidRegex
+}
 
 function ValidateUrlParameters {
     $isValidUrl = $true
@@ -288,7 +303,7 @@ function DeployARMTemplate {
         
         # Deploy ARM templates
         Write-Host "`nDeploying app services, Azure function, bot service, and other supporting resources..." -ForegroundColor Yellow
-        az deployment group create --resource-group $parameters.ResourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file 'azuredeploy.json' --parameters "baseResourceName=$($parameters.baseResourceName.Value)" "authorClientId=$appId" "authorClientSecret=$secret" "userClientId=$userappId" "userClientSecret=$usersecret" "senderUPNList=$($parameters.senderUPNList.Value)" "customDomainOption=$($parameters.customDomainOption.Value)" "appDisplayName=$($parameters.appDisplayName.Value)" "appDescription=$($parameters.appDescription.Value)" "appIconUrl=$($parameters.appIconUrl.Value)" "tenantId=$($parameters.tenantId.Value)" "hostingPlanSku=$($parameters.hostingPlanSku.Value)" "hostingPlanSize=$($parameters.hostingPlanSize.Value)" "location=$($parameters.location.Value)" "gitRepoUrl=$($parameters.gitRepoUrl.Value)" "gitBranch=$($parameters.gitBranch.Value)" "ProactivelyInstallUserApp=$($parameters.proactivelyInstallUserApp.Value)" "UserAppExternalId=$($parameters.userAppExternalId.Value)" "DefaultCulture=$($parameters.defaultCulture.Value)" "SupportedCultures=$($parameters.supportedCultures.Value)"
+        az deployment group create --resource-group $parameters.ResourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file 'azuredeploy.json' --parameters "baseResourceName=$($parameters.baseResourceName.Value)" "botClientId=$appId" "botClientSecret=$secret" "senderUPNList=$($parameters.senderUPNList.Value)" "customDomainOption=$($parameters.customDomainOption.Value)" "appDisplayName=$($parameters.appDisplayName.Value)" "appDescription=$($parameters.appDescription.Value)" "appIconUrl=$($parameters.appIconUrl.Value)" "tenantId=$($parameters.allowedTenantId.Value)" "hostingPlanSku=$($parameters.hostingPlanSku.Value)" "hostingPlanSize=$($parameters.hostingPlanSize.Value)" "location=$($parameters.location.Value)" "gitRepoUrl=$($parameters.gitRepoUrl.Value)" "gitBranch=$($parameters.gitBranch.Value)" "ProactivelyInstallUserApp=$($parameters.proactivelyInstallUserApp.Value)" "UserAppExternalId=$($parameters.userAppExternalId.Value)" "DefaultCulture=$($parameters.defaultCulture.Value)" "SupportedCultures=$($parameters.supportedCultures.Value)"
         if ($LASTEXITCODE -ne 0) {
             CollectARMDeploymentLogs
             Throw "ERROR: ARM template deployment error."
@@ -314,6 +329,23 @@ function DeployARMTemplate {
         throw
     }
 }
+
+# Create AD App principal if app is used in other tenants
+function CreateAdAppPrincipal {
+    Param(
+        [Parameter(Mandatory = $true)] $allowedTenantId,
+        [Parameter(Mandatory = $true)] $appId
+    )
+
+    Write-Host "Please login to the tenant where this app template will be used in MS-Teams."
+    $user = az login --tenant $allowedTenantId
+    $sp = az ad sp list --filter "appId eq '$appId'"
+    if(0 -eq ($sp | ConvertFrom-Json).length){
+        Write-Host "AZure AD app principal will be created in tenant ($allowedTenantId)"
+        $sp = az ad sp create --id $appId
+    }
+    Write-Host "Please inform your admin to consent the app permissions from this link https://login.microsoftonline.com/common/adminconsent?client_id=$appId"
+}    
 
 # Grant Admin consent
 function GrantAdminConsent {
@@ -606,6 +638,12 @@ function GenerateAppManifestPackage {
 # Parse & assign parameters
     $parameters = $parametersListContent | ConvertFrom-Json
     
+    # If allowedTenantId is empty or invalid, then use original tenantId
+    if([string]::IsNullOrEmpty($parameters.allowedTenantId.Value) -or ($false -eq (Test-IsGuid -ObjectGuid $parameters.allowedTenantId.Value))){
+        $parameters.allowedTenantId.Value = $parameters.tenantId.Value
+    }
+    
+    
 # Validate Https Urls parameters.
     if (!(ValidateUrlParameters)) {
         Write-Host "WebsiteUrl, PrivacyUrl, TermsOfUseUrl parameters must be in correct format and start with https:// prefix. Please update the parameters with valid Urls in the parameters.json file." -ForegroundColor Red
@@ -672,6 +710,11 @@ function GenerateAppManifestPackage {
     $logOut = az logout
     $disAzAcc = Disconnect-AzAccount
 
+    # App template is deployed on tenant A and used in tenant B
+    if($parameters.allowedTenantId.Value -ne $parameters.tenantId.Value){
+        CreateAdAppPrincipal $parameters.allowedTenantId.Value $appCred.appId
+    }
+    
 # Open manifest folder
     Invoke-Item ..\Manifest\
 
